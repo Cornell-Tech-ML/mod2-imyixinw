@@ -3,6 +3,8 @@ Be sure you have minitorch installed in you Virtual Env.
 >>> pip install -Ue .
 """
 
+from audioop import bias
+from numpy import stack
 import minitorch
 
 # Use this function to make a random parameter in
@@ -12,6 +14,54 @@ def RParam(*shape):
     return minitorch.Parameter(r)
 
 # TODO: Implement for Task 2.5.
+# Implement a neural network over the data with three linears
+# (2-> Hidden (relu), Hidden -> Hidden (relu), Hidden -> Output (sigmoid)).
+# It should do exactly the same thing as the corresponding functions
+# in project/run_scalar.py, but now use the tensor code base.
+
+
+
+class Network(minitorch.Module):
+    def __init__(self, hidden_layers):
+        super().__init__()
+        self.layer1 = Linear(2, hidden_layers)
+        self.layer2 = Linear(hidden_layers, hidden_layers)
+        self.layer3 = Linear(hidden_layers, 1)
+
+    def forward(self, x):
+        middle = self.layer1.forward(x).relu()
+        end = self.layer2.forward(middle).relu()
+        return self.layer3.forward(end).sigmoid()
+
+
+class Linear(minitorch.Module):
+    def __init__(self, in_size, out_size):
+        super().__init__()
+        self.in_size = in_size
+        self.out_size = out_size
+        self.weights = RParam(in_size, out_size)
+        self.bias = RParam(out_size)
+
+    def forward(self, inputs):
+        # output = inputs * weight + bias
+        batch_size, in_size = inputs.shape
+        output = minitorch.zeros((batch_size, self.out_size))
+
+        for i in range(batch_size):
+            for j in range(self.out_size):
+                dot_product = 0.0
+                for k in range(self.in_size):
+                    dot_product += inputs[i, k] * self.weights.value[k, j]
+
+                output[i, j] = dot_product
+
+        for i in range(batch_size):
+            for j in range(self.out_size):
+                output[i, j] += self.bias.value[j]
+
+        return output
+
+
 
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
