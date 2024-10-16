@@ -5,7 +5,6 @@ from __future__ import annotations
 import random
 from typing import TYPE_CHECKING
 
-from git import Optional
 import numpy as np
 
 import minitorch
@@ -15,7 +14,7 @@ from .autodiff import Context
 from .tensor_ops import SimpleBackend, TensorBackend
 
 if TYPE_CHECKING:
-    from typing import Any, List, Tuple, Union
+    from typing import Any, List, Tuple, Union, Optional
 
     from .tensor import Tensor
     from .tensor_data import UserIndex, UserShape
