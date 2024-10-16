@@ -153,6 +153,7 @@ class ReLU(Function):
         t1 = ctx.saved_values[0]
         return t1.f.relu_back_zip(t1, grad_output)
 
+
 class Log(Function):
     @staticmethod
     def forward(ctx: Context, t1: Tensor) -> Tensor:
@@ -191,8 +192,6 @@ class Sum(Function):
             return a.f.add_reduce(a, int(dim.item()))
         else:
             return a.f.add_reduce(a.contiguous().view(int(operators.prod(a.shape))), 0)
-        
-
 
     @staticmethod
     def backward(

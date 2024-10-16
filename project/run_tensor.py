@@ -78,7 +78,7 @@ class TensorTrain:
 
         X = minitorch.tensor(data.X)
         y = minitorch.tensor(data.y)
-        
+
         losses = []
         for epoch in range(1, self.max_epochs + 1):
             total_loss = 0.0

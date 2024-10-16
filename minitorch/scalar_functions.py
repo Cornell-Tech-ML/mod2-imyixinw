@@ -131,7 +131,7 @@ class Neg(ScalarFunction):
     def forward(ctx: Context, a: float) -> float:
         """Forward pass for negation"""
         return -a
-    
+
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
         """Backward pass for negation"""
