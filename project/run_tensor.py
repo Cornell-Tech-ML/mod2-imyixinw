@@ -13,13 +13,6 @@ def RParam(*shape):
     r = 2 * (minitorch.rand(shape) - 0.5)
     return minitorch.Parameter(r)
 
-# TODO: Implement for Task 2.5.
-# Implement a neural network over the data with three linears
-# (2-> Hidden (relu), Hidden -> Hidden (relu), Hidden -> Output (sigmoid)).
-# It should do exactly the same thing as the corresponding functions
-# in project/run_scalar.py, but now use the tensor code base.
-
-
 
 class Network(minitorch.Module):
     def __init__(self, hidden_layers):
@@ -62,7 +55,6 @@ class Linear(minitorch.Module):
         return output
 
 
-
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
 
@@ -86,7 +78,7 @@ class TensorTrain:
 
         X = minitorch.tensor(data.X)
         y = minitorch.tensor(data.y)
-
+        
         losses = []
         for epoch in range(1, self.max_epochs + 1):
             total_loss = 0.0

@@ -49,17 +49,26 @@ class Module:
             The name and `Parameter` of each ancestor parameter
 
         """
-        res = [(k, v) for k, v in self._parameters.items()]
-        for name, sub in self._modules.items():
-            res.extend([(name + "." + n, p) for n, p in sub.named_parameters()])
-        return res
+        parameters = {}
+        for k,v in self._parameters.items():
+            parameters[k] = v
+        
+        for mod_name, m in self._modules.items():
+            for k,v in m.named_parameters():
+                parameters[f'{mod_name}.{k}'] = v
+        return list(parameters.items())
+        # res = [(k, v) for k, v in self._parameters.items()]
+        # for name, sub in self._modules.items():
+        #     res.extend([(name + "." + n, p) for n, p in sub.named_parameters()])
+        # return res
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents"""
-        res = list(self._parameters.values())
-        for sub in self._modules.values():
-            res.extend(sub.parameters())
-        return res
+        return [j for _, j in self.named_parameters()]
+        # res = list(self._parameters.values())
+        # for sub in self._modules.values():
+        #     res.extend(sub.parameters())
+        # return res
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """Manually add a parameter. Useful helper for scalar parameters

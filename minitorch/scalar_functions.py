@@ -104,7 +104,7 @@ class Mul(ScalarFunction):
     @staticmethod
     def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
         """Backward pass for multiplication"""
-        (a, b) = ctx.saved_values
+        a, b = ctx.saved_values
         return d_output * b, d_output * a
 
 
@@ -130,8 +130,8 @@ class Neg(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         """Forward pass for negation"""
-        return float(-a)
-
+        return -a
+    
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
         """Backward pass for negation"""
@@ -153,8 +153,6 @@ class Sigmoid(ScalarFunction):
         """Backward pass for sigmoid"""
         sigma: float = ctx.saved_values[0]
         return sigma * (1.0 - sigma) * d_output
-        # (sig,) = ctx.saved_values
-        # return d_output * sig * (1 - sig)
 
 
 class ReLU(ScalarFunction):
@@ -171,7 +169,6 @@ class ReLU(ScalarFunction):
         """Backward pass for ReLU"""
         (a,) = ctx.saved_values
         return operators.relu_back(a, d_output)
-        # return d_output * (1.0 if a > 0 else 0.0)
 
 
 class Exp(ScalarFunction):
@@ -189,8 +186,6 @@ class Exp(ScalarFunction):
         """Backward pass for exponential"""
         out: float = ctx.saved_values[0]
         return d_output * out
-        # (ex,) = ctx.saved_values
-        # return d_output * ex
 
 
 class LT(ScalarFunction):
