@@ -36,23 +36,15 @@ class Linear(minitorch.Module):
         self.bias = RParam(out_size)
 
     def forward(self, inputs):
-        # output = inputs * weight + bias
-        batch_size, in_size = inputs.shape
-        output = minitorch.zeros((batch_size, self.out_size))
+        # outputs = inputs * weights + bias
+        batch_size = inputs.shape[0]
+        bias_shape = self.bias.value.shape[0]
 
-        for i in range(batch_size):
-            for j in range(self.out_size):
-                dot_product = 0.0
-                for k in range(self.in_size):
-                    dot_product += inputs[i, k] * self.weights.value[k, j]
+        outputs = inputs.view(*inputs.shape, 1)
+        outputs = (outputs * self.weights.value).sum(1).view(batch_size, bias_shape)
+        outputs += self.bias.value
 
-                output[i, j] = dot_product
-
-        for i in range(batch_size):
-            for j in range(self.out_size):
-                output[i, j] += self.bias.value[j]
-
-        return output
+        return outputs
 
 
 def default_log_fn(epoch, total_loss, correct, losses):
@@ -76,8 +68,8 @@ class TensorTrain:
         self.model = Network(self.hidden_layers)
         optim = minitorch.SGD(self.model.parameters(), learning_rate)
 
-        X = minitorch.tensor(data.X)
-        y = minitorch.tensor(data.y)
+        X = minitorch.tensor(data.X, requires_grad=True)
+        y = minitorch.tensor(data.y, requires_grad=True)
 
         losses = []
         for epoch in range(1, self.max_epochs + 1):
